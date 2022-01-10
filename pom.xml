@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.arya.ehcache.delegation</groupId>
-	<artifactId>spring-boot-cache-delegation-h2-crud</artifactId>
+	<artifactId>spring-boot-h2-ehcache-delegation</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-boot-cache-delegation-h2-crud</name>
-	<description>Demo project for Spring Boot, Ehcache, h2 db, delegation with BeanPostProcessor</description>
+	<name>spring-boot-h2-ehcache-delegation</name>
+	<description>Demo project for Spring Boot JPA, Ehcache, h2 db, delegation with BeanPostProcessor</description>
 
 	<properties>
 		<java.version>1.8</java.version>

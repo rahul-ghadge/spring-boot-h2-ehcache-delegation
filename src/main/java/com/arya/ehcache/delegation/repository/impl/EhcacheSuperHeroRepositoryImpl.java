@@ -21,13 +21,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Repository
-public class SuperHeroRepositoryImpl implements SuperHeroRepository {
+public class EhcacheSuperHeroRepositoryImpl implements SuperHeroRepository {
 
     private final SuperHeroRepository repository;
     private final Ehcache ehcache;
 
-    public SuperHeroRepositoryImpl(@Lazy SuperHeroRepository repository,
-                                   @Autowired(required = false) Ehcache ehcache) {
+    public EhcacheSuperHeroRepositoryImpl(@Lazy SuperHeroRepository repository,
+                                          @Autowired(required = false) Ehcache ehcache) {
         this.repository = repository;
         this.ehcache = ehcache;
     }

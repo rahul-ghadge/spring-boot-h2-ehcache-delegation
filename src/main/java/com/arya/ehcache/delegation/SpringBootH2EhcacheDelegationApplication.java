@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Slf4j
 @SpringBootApplication
 @EnableJpaRepositories
-public class SpringBootCacheDelegationH2CrudApplication {
+public class SpringBootH2EhcacheDelegationApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringBootCacheDelegationH2CrudApplication.class, args);
+		SpringApplication.run(SpringBootH2EhcacheDelegationApplication.class, args);
 	}
 
 }
