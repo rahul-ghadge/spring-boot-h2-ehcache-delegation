@@ -135,7 +135,7 @@ Or
     - GET by ID IN
 
 
-    
+    ```
     @RequiredArgsConstructor
     @RestController
     @RequestMapping("/super-hero")
@@ -157,6 +157,7 @@ Or
         @GetMapping("/in")
         public ResponseEntity<List<?>> findByIdIn(@RequestParam List<Integer> ids);
     }
+    ```
    
    In **SuperHeroServiceImpl.java**, we are injecting SuperHeroRepository interface using constructor injection for read operation.
     
