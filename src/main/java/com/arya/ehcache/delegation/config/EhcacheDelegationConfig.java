@@ -8,12 +8,14 @@ import net.sf.ehcache.Ehcache;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
 @ConditionalOnBean(Ehcache.class)
+@ConditionalOnClass(Ehcache.class)
 public class EhcacheDelegationConfig implements BeanPostProcessor {
 
     private final Ehcache ehcache;
@@ -21,9 +23,10 @@ public class EhcacheDelegationConfig implements BeanPostProcessor {
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 
-        if (bean instanceof SuperHeroRepository)
+        if (bean instanceof SuperHeroRepository) {
+            log.info("*** Ehcache delegation with EhcacheSuperHeroRepositoryImpl class implementation in use ***");
             return new EhcacheSuperHeroRepositoryImpl((SuperHeroRepository) bean, ehcache);
-
+        }
         return bean;
     }
 }

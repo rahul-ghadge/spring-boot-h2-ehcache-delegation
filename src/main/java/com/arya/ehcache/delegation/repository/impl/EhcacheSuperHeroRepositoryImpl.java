@@ -4,14 +4,12 @@ import com.arya.ehcache.delegation.entities.SuperHero;
 import com.arya.ehcache.delegation.repository.SuperHeroRepository;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +18,13 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Repository
 public class EhcacheSuperHeroRepositoryImpl implements SuperHeroRepository {
 
     private final SuperHeroRepository repository;
     private final Ehcache ehcache;
 
     public EhcacheSuperHeroRepositoryImpl(@Lazy SuperHeroRepository repository,
-                                          @Autowired(required = false) Ehcache ehcache) {
+                                          Ehcache ehcache) {
         this.repository = repository;
         this.ehcache = ehcache;
     }

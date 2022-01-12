@@ -10,12 +10,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 
 @EnableCaching
 @Configuration
-@Order(Ordered.HIGHEST_PRECEDENCE)
 public class EhcacheCacheConfig {
 
     @Bean
