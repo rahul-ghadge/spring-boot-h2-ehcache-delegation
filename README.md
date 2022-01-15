@@ -6,6 +6,8 @@ In this application delegation is used along with spring boot by overriding Bean
 
 `EhcacheDelegationConfig` class is used as delegation, which wraps `SuperHeroRepository` inside `EhcacheSuperHeroRepositoryImpl` if **EhCache** bean is configured in classpath.
 
+Cache will be checked if and only if `Ehcache` bean is configured else `EhcacheSuperHeroRepositoryImpl` will be skipped.
+
 
 ## Prerequisites 
 - Java
@@ -178,7 +180,73 @@ Or
    }
    ```
    
- 
+5. #### Ehcache Delegation Config class
+    This is the most important class in spring **delegation pattern** and in this application also. This will override the default behaviour of spring JPA by returning `EhcacheSuperHeroReoisitoryImpl` class implementation
+    by overriding `BeanPostProcessor`'s `postProcessAfterInitialization()` method instead of JPA repository if and only if `Ehcache bean is present in classpath` else default JPA repository will be in a picture. <br/> 
+    _In simple words if `Ehcache` bean is configured in application then first SuperHero data will be found in cache and then in DB and will be added in cache after fetching from DB._<br/>
+    @ConditionalOnBean(Ehcache.class) will check Ehcache bean is present in application only then this call will get configured.<br/>
+    @ConditionalOnClass(Ehcache.class) will check Ehcache class is present in application only then this call will get configured. This will prevent from getting `net.sf.ehcache.Ehcache` **class not found exception**.
+    ```
+    @Slf4j
+    @Configuration
+    @RequiredArgsConstructor
+    @ConditionalOnBean(Ehcache.class)
+    @ConditionalOnClass(Ehcache.class)
+    public class EhcacheDelegationConfig implements BeanPostProcessor {
+   
+        private final Ehcache ehcache;
+    
+        @Override
+        public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    
+            if (bean instanceof SuperHeroRepository) {
+                log.info("*** Ehcache delegation with EhcacheSuperHeroRepositoryImpl class implementation in use ***");
+                return new EhcacheSuperHeroRepositoryImpl((SuperHeroRepository) bean, ehcache);
+            }
+            return bean;
+        }
+    }
+    ```
+   
+5. #### Ehcache Config class (Optional)
+    This is optional class. If we configure this class in application then `Ehcache` will be enabled, also `EhcacheSuperHeroRepositoryImpl`'s implementation will be in use.<br>
+    If we delete this class or comment the content of it then `BeanPostProcessor`'s `postProcessAfterInitialization()` method will not delegate the `EhcacheSuperHeroRepositoryImpl` class and requests will directly reach to DB
+    without checking any cache data.
+    
+    ```
+    @EnableCaching
+    @Configuration
+    public class EhcacheCacheConfig {
+    
+        @Bean
+        public CacheManager getCustomCacheManager() {
+            CacheManager cacheManager = CacheManager.create(getEhCacheConfiguration());
+            cacheManager.addCache(ehcache());
+            return cacheManager;
+        }
+    
+        @Primary
+        @Bean
+        public Ehcache ehcache() {
+            CacheConfiguration cacheConfig = new CacheConfiguration("my-cache", 1000)
+                    .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU)
+                    .eternal(false)
+                    .timeToLiveSeconds(3600)
+                    .timeToIdleSeconds(3600);
+            return new Cache(cacheConfig);
+        }
+    
+        private net.sf.ehcache.config.Configuration getEhCacheConfiguration() {
+            net.sf.ehcache.config.Configuration configuration = new net.sf.ehcache.config.Configuration();
+            DiskStoreConfiguration diskStoreConfiguration = new DiskStoreConfiguration();
+            diskStoreConfiguration.setPath("java.io.tmpdir");
+            configuration.addDiskStore(diskStoreConfiguration);
+            return configuration;
+        }
+    }
+    ```
+
+
     
 ### API Endpoints
 
