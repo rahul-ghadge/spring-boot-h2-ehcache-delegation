@@ -1,10 +1,10 @@
 # spring-boot-h2-ehcache-delegation
 Demo project for Spring Boot, Ehcache, h2 db, delegation with BeanPostProcessor.<br/>
-In this application delegation is used along with spring boot by overriding BeanPostProcessor interfaces postProcessAfterInitialization method. 
+In this application delegation is used along with spring boot by overriding `BeanPostProcessor` interface's `postProcessAfterInitialization()` method. 
 
 `@EnableJpaRepositories` annotation is used on main class to Enable H2 DB related configuration, which will read properties from `application.properties` file to perform read operations.
 
-`EhcacheDelegationConfig` class is used as delegation, which wraps `SuperHeroRepository` inside `EhcacheSuperHeroRepositoryImpl` if **EhCache** bean is configured in classpath.
+`EhcacheDelegationConfig` class is used as delegation, which wraps `SuperHeroRepository` inside `EhcacheSuperHeroRepositoryImpl` if `EhCache` bean is configured in classpath.
 
 Cache will be checked if and only if `Ehcache` bean is configured else `EhcacheSuperHeroRepositoryImpl` will be skipped.
 
@@ -46,7 +46,8 @@ Or
 1. #### Maven Dependencies
     Need to add below `JPA` & `H2` dependencies to enable H2 DB related config in **pom.xml**. <br>
     `Lombok` dependency is to get rid of boiler-plate code.<br>
-    `AOP` for aspect related features to print logs using `@LogObjectBefore` & `@LogObjectAfter` custom annotations.
+    `AOP` for aspect related features to print logs using `@LogObjectBefore` & `@LogObjectAfter` custom annotations.<br/>
+    `Ehcache` for enabling in memory custom Ehcache in the application 
     ```
     <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -131,7 +132,7 @@ Or
 4. #### Read operation for Super Heroes
 
     In **SuperHeroController.java** class, 
-    we have exposed 5 endpoints for basic CRUD operations
+    we have exposed 3 endpoints for basic READ operations
     - GET All Super Heroes
     - GET by ID
     - GET by ID IN
