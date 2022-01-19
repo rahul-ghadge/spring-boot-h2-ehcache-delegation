@@ -3,6 +3,7 @@ package com.arya.ehcache.delegation.service.impl;
 import com.arya.ehcache.delegation.entities.SuperHero;
 import com.arya.ehcache.delegation.repository.SuperHeroRepository;
 import com.arya.ehcache.delegation.service.SuperHeroService;
+import com.arya.ehcache.delegation.utils.MockDataHelperUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,14 @@ public class SuperHeroServiceImpl implements SuperHeroService {
 
     @Override
     public List<?> findAll() {
-        return superHeroRepository.findAll();
+        List<?> storedSuperHeroes = superHeroRepository.findAll();
+        if(storedSuperHeroes.isEmpty()) {
+            List<SuperHero> superHeroes = MockDataHelperUtil.superHeroesSupplier.get();
+            superHeroRepository.saveAll(superHeroes);
+            log.info("* Super heroes stored in DB");
+            return superHeroes;
+        }
+        return storedSuperHeroes;
     }
 
     @Override

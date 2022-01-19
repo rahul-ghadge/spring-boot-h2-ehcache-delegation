@@ -141,7 +141,7 @@ Or
     ```
     @RequiredArgsConstructor
     @RestController
-    @RequestMapping("/super-hero")
+    @RequestMapping("/super-heroes")
     public class SuperHeroController {
    
         private final SuperHeroService superHeroService;
@@ -252,7 +252,7 @@ Or
 ### API Endpoints
 
 - #### Super Hero CRUD Operations
-    > **GET Mapping** http://localhost:8080/super-heroes  - Get all Super Heroes
+    > **GET Mapping** http://localhost:8080/super-heroes  - Get all Super Heroes from DB. If found no record, will add mock data from `MockDataHelperUtil` class to DB.
     
     > **GET Mapping** http://localhost:8080/super-heroes/1  - Get Super Hero by ID
        

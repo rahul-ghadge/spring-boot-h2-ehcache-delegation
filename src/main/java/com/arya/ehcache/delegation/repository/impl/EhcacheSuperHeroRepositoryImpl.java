@@ -2,6 +2,7 @@ package com.arya.ehcache.delegation.repository.impl;
 
 import com.arya.ehcache.delegation.entities.SuperHero;
 import com.arya.ehcache.delegation.repository.SuperHeroRepository;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.springframework.context.annotation.Lazy;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class EhcacheSuperHeroRepositoryImpl implements SuperHeroRepository {
 
     private final SuperHeroRepository repository;
@@ -34,10 +36,12 @@ public class EhcacheSuperHeroRepositoryImpl implements SuperHeroRepository {
         Element superHeroElement = ehcache.get(id);
 
         if (Objects.isNull(superHeroElement)) {
+            log.info("* Fetching Super hero from DB for Id: {}", id);
             Optional<SuperHero> optionalSuperHero = this.repository.findById(id);
             optionalSuperHero.ifPresent(superHero -> ehcache.put(new Element(id, superHero)));
             return optionalSuperHero;
         } else {
+            log.info("* Super hero from cache with Id: {} hit count: {}", id, superHeroElement.getHitCount());
             return Optional.of((SuperHero) superHeroElement.getObjectValue());
         }
     }
@@ -56,6 +60,7 @@ public class EhcacheSuperHeroRepositoryImpl implements SuperHeroRepository {
                 .filter(id -> {
                     Element superHeroElement = ehcache.get(id);
                     if (Objects.nonNull(superHeroElement)) {
+                        log.info("* Super hero from cache with Id: {} hit count: {}", id, superHeroElement.getHitCount());
                         superHeroes.add((SuperHero) superHeroElement.getObjectValue());
                         return true;
                     }
@@ -66,6 +71,7 @@ public class EhcacheSuperHeroRepositoryImpl implements SuperHeroRepository {
 
         this.repository.findByIdIn(modifiableIds)
                 .forEach(hero -> {
+                    log.info("* Fetched Super hero from DB and added in cache for Id: {}", hero.getId());
                     ehcache.put(new Element(hero.getId(), hero));
                     superHeroes.add(hero);
                 });
